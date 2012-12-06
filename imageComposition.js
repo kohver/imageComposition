@@ -214,12 +214,7 @@
     }
 
     function isHor(sizes) {
-        console.log(sizes);
         return !!(sizes[0] / sizes[1] > 1.1);
-    }
-
-    function isVer($image) {
-        return !isHor($image);
     }
 
     $.fn[PLUGIN_NAME] = function(method) {
