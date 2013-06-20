@@ -18,13 +18,26 @@
                 var firstImageSize;
                 var firstImageWidth;
                 var firstImageHeight;
+                var options = {};
+
+                if (typeof hardPosition == 'object') {
+                    options = $.extend({
+                        width: $wrap.width(),
+                        height: $wrap.height()
+                    }, hardPosition);
+                } else {
+                    options = {
+                        width: $wrap.width(),
+                        height: $wrap.height()
+                    }
+                }
 
                 var columns = [];
                 var wrap = {
                     width: 0,
                     height: 0,
-                    maxWidth: $wrap.width(),
-                    maxHeight: $wrap.height()
+                    maxWidth: options.width,
+                    maxHeight: options.height
                 };
 
                 if ($wrap.data(DATA_KEY) || !imagesNum) return;
@@ -32,20 +45,19 @@
                 $wrap.data(DATA_KEY, true);
                 $wrap.addClass(CLASS_LOADING);
 
-                (function loadImage(i) {
+                var loadedImages = 0;
+                $images.each(function(i) {
+                    var src = $(this).attr('src');
                     var img = new Image();
-                    var src = $($images[i]).attr('src');
-
                     img.onload = function() {
-                        imagesSizes.push([img.width, img.height]);
-                        if (i == imagesNum - 1) {
-                            return onLoadImages();
-                        } else {
-                            loadImage(i + 1);
+                        imagesSizes[i] = [img.width, img.height];
+                        loadedImages++;
+                        if (loadedImages >= imagesNum) {
+                            onLoadImages();
                         }
                     };
                     img.src = src;
-                })(0);
+                });
 
                 function onLoadImages() {
                     if ((imagesNum - 1) % imagesPerColumn == 1) {
@@ -215,6 +227,10 @@
 
     function isHor(sizes) {
         return !!(sizes[0] / sizes[1] > 1.1);
+    }
+
+    function isVer($image) {
+        return !isHor($image);
     }
 
     $.fn[PLUGIN_NAME] = function(method) {
