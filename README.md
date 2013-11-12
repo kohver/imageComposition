@@ -10,3 +10,6 @@ Code
 ```javascript
 $('.images-block').imageComposition();
 ```
+Example
+---
+http://jsfiddle.net/FzSLz/
